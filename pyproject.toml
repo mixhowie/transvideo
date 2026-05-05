@@ -6,7 +6,7 @@ authors = [
     {name = "Howie Peng",email = "mixhowie@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12,<4.0"
+requires-python = "==3.12.*"
 dependencies = [
     "lxml==6.1.0",
     "ollama>=0.6.2",
