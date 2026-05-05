@@ -1,0 +1,11 @@
+[MASTER]
+# A comma-separated list of file extensions that should be checked
+extension=py
+
+[FORMAT]
+# Maximum number of characters on a single line
+max-line-length=120
+
+[MESSAGES CONTROL]
+# Disable specific messages or message categories
+# disable=C0111,W0212

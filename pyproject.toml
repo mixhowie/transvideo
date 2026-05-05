@@ -1,0 +1,23 @@
+[project]
+name = "transvideo"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Howie Peng",email = "mixhowie@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "lxml==6.1.0",
+    "ollama>=0.6.2",
+    "openai-whisper==20250625",
+    "pyopenssl==26.1.0",
+    "requests==2.33.1",
+    "translators==6.0.4",
+    "urllib3==2.6.3",
+]
+
+[tool.uv]
+required-environments = [
+    "sys_platform == 'darwin' and platform_machine == 'x86_64'",
+]
