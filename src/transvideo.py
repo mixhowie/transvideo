@@ -9,7 +9,9 @@ with embedded or soft subtitles.
 
 import logging
 import os
+import shutil
 import subprocess
+import tempfile
 import warnings
 
 # Suppress SyntaxWarning from translators package in Python 3.12+
@@ -272,11 +274,17 @@ class Transvideo:
     def _compile_video_with_srt_hard(self):
         logging.info("Compiling video with srt...")
 
-        srt_quoted = "'" + self.srt_file.replace("'", "'\\''") + "'"
-        vf = f"subtitles={srt_quoted}:force_style='FontSize=12,Fontname=PingFang SC'"
-        cmd = ["ffmpeg", "-i", self.video_file, "-vf", vf, self.output_file]
-        logging.info("Executing command: %s", cmd)
-        subprocess.run(cmd)
+        # ffmpeg's `subtitles` filter applies its own two-level escaping to the
+        # filename, which makes paths containing quotes/colons/commas/etc.
+        # extremely fragile. Stage the srt under a sanitized temp path so the
+        # filter only ever sees plain ASCII.
+        with tempfile.TemporaryDirectory() as tmpdir:
+            safe_srt = os.path.join(tmpdir, "subs.srt")
+            shutil.copyfile(self.srt_file, safe_srt)
+            vf = f"subtitles={safe_srt}:force_style='FontSize=12,Fontname=PingFang SC'"
+            cmd = ["ffmpeg", "-i", self.video_file, "-vf", vf, self.output_file]
+            logging.info("Executing command: %s", cmd)
+            subprocess.run(cmd)
 
     def _compile_video_with_srt_soft(self):
         logging.info("Compiling video with srt...")
