@@ -6,18 +6,53 @@ authors = [
     {name = "Howie Peng",email = "mixhowie@gmail.com"}
 ]
 readme = "README.md"
-requires-python = "==3.12.*"
+requires-python = "==3.12.11"
 dependencies = [
+    "click==8.3.3",
     "lxml==6.1.0",
-    "ollama>=0.6.2",
+    "ollama==0.6.2",
     "openai-whisper==20250625",
-    "pyopenssl==26.1.0",
-    "requests==2.33.1",
+    "pyopenssl==26.2.0",
+    "requests==2.34.2",
     "translators==6.0.4",
-    "urllib3==2.6.3",
+    "urllib3==2.7.0",
+]
+
+[project.scripts]
+transvideo = "cli:main"
+
+[dependency-groups]
+dev = [
+    "ruff==0.15.13",
+    "ty==0.0.37",
 ]
 
 [tool.uv]
 required-environments = [
     "sys_platform == 'darwin' and platform_machine == 'x86_64'",
 ]
+# numba >= 0.62 / llvmlite >= 0.45 lack prebuilt wheels for darwin x86_64
+# (would require building llvmlite from source via cmake).
+constraint-dependencies = [
+    "numba<0.62",
+    # torch 2.2.2 (last darwin x86_64 release) was built against numpy 1.x.
+    "numpy<2",
+    # qh3 >= 1.8 ships a QUIC/UDP send path that hits EMSGSIZE on darwin
+    # x86_64, breaking niquests-based HTTP calls (e.g. translators -> bing).
+    "qh3<1.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["src"]
+sources = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]

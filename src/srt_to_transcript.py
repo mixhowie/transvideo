@@ -4,12 +4,9 @@ Convert SRT subtitle files to plain transcript text.
 """
 
 import re
-import argparse
-import os
-from typing import List, Tuple
 
 
-def parse_srt(srt_content: str) -> List[str]:
+def parse_srt(srt_content: str) -> list[str]:
     """
     Parse SRT content and extract only the text parts.
 
@@ -20,9 +17,9 @@ def parse_srt(srt_content: str) -> List[str]:
         List of text lines from the SRT file
     """
     # Pattern to match SRT index and timestamp lines
-    pattern = r'^\d+$|^\d{2}:\d{2}:\d{2},\d{3}\s-->\s\d{2}:\d{2}:\d{2},\d{3}$'
+    pattern = r"^\d+$|^\d{2}:\d{2}:\d{2},\d{3}\s-->\s\d{2}:\d{2}:\d{2},\d{3}$"
 
-    lines = srt_content.strip().split('\n')
+    lines = srt_content.strip().split("\n")
     text_lines = []
 
     i = 0
@@ -55,13 +52,13 @@ def srt_to_transcript(input_file: str, output_file: str) -> None:
         output_file: Path to output transcript file
     """
     try:
-        with open(input_file, 'r', encoding='utf-8') as f:
+        with open(input_file, encoding="utf-8") as f:
             srt_content = f.read()
 
         transcript_lines = parse_srt(srt_content)
 
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(transcript_lines))
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(transcript_lines))
 
         print(f"Successfully converted {input_file} to {output_file}")
 
@@ -69,28 +66,7 @@ def srt_to_transcript(input_file: str, output_file: str) -> None:
         print(f"Error: {str(e)}")
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Convert SRT files to transcript text.')
-    parser.add_argument('input', help='Input SRT file path')
-    parser.add_argument('-o', '--output', help='Output transcript file path')
-
-    args = parser.parse_args()
-
-    input_file = args.input
-
-    if not os.path.exists(input_file):
-        print(f"Error: Input file {input_file} does not exist.")
-        return
-
-    if args.output:
-        output_file = args.output
-    else:
-        # Default output filename: replace .srt extension with .txt or add .txt if no extension
-        base, ext = os.path.splitext(input_file)
-        output_file = f"{base}_transcript.txt"
-
-    srt_to_transcript(input_file, output_file)
-
-
 if __name__ == "__main__":
+    from cli import main
+
     main()

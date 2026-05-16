@@ -1,5 +1,7 @@
 import unittest
+
 from transvideo import seconds_to_hms
+
 
 class TestSecondsToHms(unittest.TestCase):
     def test_seconds_to_hms(self):
@@ -11,5 +13,6 @@ class TestSecondsToHms(unittest.TestCase):
         self.assertEqual(seconds_to_hms(3661.123), "01:01:01,123")
         self.assertEqual(seconds_to_hms(86399.999), "23:59:59,999")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
