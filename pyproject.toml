@@ -9,9 +9,12 @@ readme = "README.md"
 requires-python = "==3.12.11"
 dependencies = [
     "click==8.3.3",
+    "faster-whisper==1.2.1",
     "lxml==6.1.0",
+    # MLX is Apple-Silicon-only; the marker keeps the darwin x86_64 resolution
+    # solvable, where the 'faster' backend is the fallback.
+    "mlx-whisper==0.4.3 ; platform_machine == 'arm64'",
     "ollama==0.6.2",
-    "openai-whisper==20250625",
     "pyopenssl==26.2.0",
     "requests==2.34.2",
     "translators==6.0.4",
@@ -30,13 +33,9 @@ dev = [
 [tool.uv]
 required-environments = [
     "sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
 ]
-# numba >= 0.62 / llvmlite >= 0.45 lack prebuilt wheels for darwin x86_64
-# (would require building llvmlite from source via cmake).
 constraint-dependencies = [
-    "numba<0.62",
-    # torch 2.2.2 (last darwin x86_64 release) was built against numpy 1.x.
-    "numpy<2",
     # qh3 >= 1.8 ships a QUIC/UDP send path that hits EMSGSIZE on darwin
     # x86_64, breaking niquests-based HTTP calls (e.g. translators -> bing).
     "qh3<1.6",
